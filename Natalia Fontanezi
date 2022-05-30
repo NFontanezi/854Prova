@@ -1,0 +1,705 @@
+// See https://aka.ms/new-console-template for more information
+using System.Text.RegularExpressions;
+
+
+
+
+//variaveis jogador1
+string nome1;
+int count1 = 0;
+string[] nomeEmbarc1 = new string[10];
+string[] pInicialLin1 = new string[10];
+string[] pInicialCol1 = new string[10];
+string[] pFinalLin1 = new string[10];
+string[] pFinalCol1 = new string[10];
+string[,] mapa1 = new string[10, 10];
+string[,] mapaEmbarc1 = new string[10, 10];
+List<string> marca1 = new();
+List<string> marca1input = new();
+List<string> tiros1 = new();
+string list1, list2;
+bool jogadainvalida1 = false;
+
+
+//variaveis jogador2
+string nome2;
+int count2 = 0;
+string[] nomeEmbarc2 = new string[10];
+string[] pInicialLin2 = new string[10];
+string[] pInicialCol2 = new string[10];
+string[] pFinalLin2 = new string[10];
+string[] pFinalCol2 = new string[10];
+string[,] mapa2 = new string[10, 10];
+string[,] mapaEmbarc2 = new string[10, 10];
+List<string> marca2 = new();
+List<string> marca2input = new();
+List<string> tiros2 = new();
+bool jogadainvalida2 = false;
+
+string inputE;
+bool inputEbool = false;
+bool patternI = false;
+bool check = false;
+int count1E = 1;
+int count2E = 1;
+bool sair = false;
+bool input = false;
+int opcaoJogo;
+
+
+int l1, c1, l2, c2;
+
+Dictionary<string, string> dicReplace = new Dictionary<string, string>();
+dicReplace.Add("A", "0");
+dicReplace.Add("B", "1");
+dicReplace.Add("C", "2");
+dicReplace.Add("D", "3");
+dicReplace.Add("E", "4");
+dicReplace.Add("F", "5");
+dicReplace.Add("G", "6");
+dicReplace.Add("H", "7");
+dicReplace.Add("I", "8");
+dicReplace.Add("J", "9");
+
+
+// Exibindo Console
+
+
+
+while (!input)
+{
+    Console.Clear();
+    Console.WriteLine("\t###### Batalaha Naval######");
+    Console.WriteLine("");
+    Console.Write("\tTipo de Jogo: \n\t1 - Jogar sozinho\n\t2 - Jogar com 2 jogadores\n\tOpção: ");
+    input = int.TryParse(Console.ReadLine(), out opcaoJogo);
+    if (!input)
+    {
+        Console.WriteLine("Opção Inválida, tente novamente");
+        Console.ReadKey();
+    }
+
+    else if (opcaoJogo != 1 && opcaoJogo != 2)
+    {
+        Console.WriteLine("Opção Inválida, tente novamente");
+        input = false;
+        Console.ReadKey();
+    }
+
+    else if (opcaoJogo == 1)
+    {
+        Console.WriteLine("Etapa de jogo em desenvolvimento");
+        input = false;
+        Console.ReadKey();
+    }
+    else continue;
+}
+Console.Write("\n\tNome jogador 1: ");
+nome1 = Console.ReadLine().ToUpper();
+Console.Write("\tNome jogador 2: ");
+nome2 = Console.ReadLine().ToUpper();
+Console.WriteLine("\tJogadores cadastrados com sucesso");
+Console.ReadKey();
+
+Console.Clear();
+Console.WriteLine("\t#######Cadastro de Embarações######");
+Console.WriteLine("");
+Console.WriteLine("\tCada jogador tem direito as seguintes embarcações:");
+Console.WriteLine("\tPA = Porta - Aviões (5 quadrantes) | Qtdde: 1\n\tNT = Navio - Tanque(4 quadrantes) | Qtdde:2\n\tDS = Destroyers(3 quadrantes) | Qtdde:3\n\tSB= Submarinos(2 quadrantes) | Qtdde:4");
+Console.WriteLine("");
+Console.WriteLine("\tA posição de linha deve ser inserida de A-J e de coluna de 0-9");
+Console.WriteLine("");
+Console.WriteLine("\tJogador: " + nome1);
+
+
+// inclusao embarcações // JOGADOR 1
+for (int i = 0; i < 10; i++)
+{
+
+    while (!inputEbool)
+    {
+        Console.Write($"\n\tEmbarcação {count1E}: ");
+        inputE = Console.ReadLine().ToUpper();
+
+        if (inputE != "PA" && inputE != "NT" && inputE != "DS" && inputE != "SB")
+        {
+            Console.WriteLine("\tEmbarcação Inválida ");
+            inputEbool = false;
+        }
+        else
+        {
+            nomeEmbarc1[i] = inputE;
+            inputEbool = true;
+        }
+
+    }
+
+    while (!patternI)
+    {
+        var pattern = @"\b([A-J])([0-9])([A-J])([0-9])\b";
+        Regex regex = new Regex(pattern);
+        Console.Write("\tPosição : ");
+        string ps = Console.ReadLine().ToUpper();
+
+        if (!Regex.IsMatch(ps, pattern) || marca1.Contains(ps))
+        {
+
+            Console.WriteLine("\tPosição Invalida. Tente novamente");
+            continue;
+
+        }
+        else
+        {
+            //validaçao lista posiçoes ja marcadas
+            string auxLinhaInicx = ps.Substring(0, 1);
+            string auxLinhaFinx = ps.Substring(2, 1);
+            string auxColInicx = ps.Substring(1, 1);
+            string auxColFinx = ps.Substring(3, 1);
+            if (auxLinhaInicx == auxLinhaFinx)
+            {
+                int intauxColLinx = Convert.ToInt32(auxColInicx) - 1;
+                int intauxColFinx = Convert.ToInt32(auxColFinx);
+
+                while (intauxColLinx < intauxColFinx)
+                {
+                    intauxColLinx++;
+                    string joinpInicx = string.Concat(auxLinhaInicx, intauxColLinx);
+
+                    if (marca1.Contains(joinpInicx))
+                    {
+                        check = true;
+                        break;
+
+                    }
+                    else marca1input.Add(joinpInicx);
+                }
+            }
+
+        }
+        if (check == true)
+        {
+            Console.WriteLine("\tPosição Invalida. Tente novamente");
+            check = false;
+            continue;
+        }
+
+        else //nova posição e alteração de letra para numero
+        {
+
+            Console.WriteLine("\tCadastrada com sucesso");
+            count1E++;
+            patternI = true;
+            pInicialCol1[i] = ps.Substring(1, 1);
+            pFinalCol1[i] = ps.Substring(3, 1);
+            string auxLinhaInic = ps.Substring(0, 1);
+            string auxLinhaFin = ps.Substring(2, 1);
+            string auxColInic = ps.Substring(1, 1);
+            string auxColFin = ps.Substring(3, 1);
+
+            foreach (var item in dicReplace)
+            {
+                if (item.Key == auxLinhaInic)
+                {
+                    pInicialLin1[i] = item.Value;
+
+                }
+                if (item.Key == auxLinhaFin)
+                {
+                    pFinalLin1[i] = item.Value;
+
+                }
+            }
+
+            //inclusão da nova posição utilizada
+            if (auxLinhaInic == auxLinhaFin)
+            {
+                int intauxColLin = Convert.ToInt32(auxColInic) - 1;
+                int intauxColFin = Convert.ToInt32(auxColFin);
+
+                while (intauxColLin < intauxColFin)
+                {
+                    intauxColLin++;
+                    string joinpInic = string.Concat(auxLinhaInic, intauxColLin);
+
+                    marca1.Add(joinpInic);
+
+
+                }
+            }
+
+        }
+    }
+    patternI = false;
+    inputEbool = false;
+
+}
+
+Console.ReadKey();
+
+// inclusao embarcações // JOGADOR 2
+Console.Clear();
+Console.WriteLine("\t#######Cadastro de Embarações######");
+Console.WriteLine("");
+Console.WriteLine("\tCada jogador tem direito as seguintes embarcações:");
+Console.WriteLine("\tPA = Porta - Aviões (5 quadrantes) | Qtdde: 1\n\tNT = Navio - Tanque(4 quadrantes) | Qtdde:2\n\tDS = Destroyers(3 quadrantes) | Qtdde:3\n\tSB= Submarinos(2 quadrantes) | Qtdde:4");
+Console.WriteLine("");
+Console.WriteLine("\tA posição de linha deve ser inserida de A-J e de coluna de 0-9");
+Console.WriteLine("");
+Console.WriteLine("\tJogador: " + nome2);
+for (int i = 0; i < 10; i++)
+{
+    while (!inputEbool)
+    {
+        Console.Write($"\n\tEmbarcação {count2E}: ");
+        inputE = Console.ReadLine().ToUpper();
+
+        if (inputE != "PA" && inputE != "NT" && inputE != "DS" && inputE != "SB")
+        {
+            Console.WriteLine("\tEmbarcação Inválida ");
+            inputEbool = false;
+        }
+        else
+        {
+            nomeEmbarc2[i] = inputE;
+            inputEbool = true;
+        }
+
+    }
+    while (!patternI)
+    {
+        var pattern = @"\b([A-J])([0-9])([A-J])([0-9])\b";
+        Regex regex = new Regex(pattern);
+        Console.Write("\tPosição : ");
+        string ps = Console.ReadLine().ToUpper();
+
+        if (!Regex.IsMatch(ps, pattern) || marca2.Contains(ps))
+        {
+
+            Console.WriteLine("\tPosição Invalida. Tente novamente");
+            continue;
+
+        }
+        else
+        {
+            //validação da posição
+            string auxLinhaInicx = ps.Substring(0, 1);
+            string auxLinhaFinx = ps.Substring(2, 1);
+            string auxColInicx = ps.Substring(1, 1);
+            string auxColFinx = ps.Substring(3, 1);
+            if (auxLinhaInicx == auxLinhaFinx)
+            {
+                int intauxColLinx = Convert.ToInt32(auxColInicx) - 1;
+                int intauxColFinx = Convert.ToInt32(auxColFinx);
+
+                while (intauxColLinx < intauxColFinx)
+                {
+                    intauxColLinx++;
+                    string joinpInicx = string.Concat(auxLinhaInicx, intauxColLinx);
+
+                    if (marca2.Contains(joinpInicx))
+                    {
+                        check = true;
+                        break;
+
+                    }
+                    else marca2input.Add(joinpInicx);
+                }
+            }
+
+        }
+        if (check == true)
+        {
+            Console.WriteLine("\tPosição Invalida. Tente novamente");
+            check = false;
+            continue;
+        }
+
+        else //inclusao da nova posição e alteração de letra para numero
+        {
+
+            Console.WriteLine("\tCadastrada com sucesso");
+            count2E++;
+            patternI = true;
+            pInicialCol2[i] = ps.Substring(1, 1);
+            pFinalCol2[i] = ps.Substring(3, 1);
+            string auxLinhaInicx = ps.Substring(0, 1);
+            string auxLinhaFinx = ps.Substring(2, 1);
+            string auxColInicx = ps.Substring(1, 1);
+            string auxColFinx = ps.Substring(3, 1);
+
+            foreach (var item in dicReplace)
+            {
+                if (item.Key == auxLinhaInicx)
+                {
+                    pInicialLin2[i] = item.Value;
+
+                }
+                if (item.Key == auxLinhaFinx)
+                {
+                    pFinalLin2[i] = item.Value;
+
+                }
+            }
+
+            //add posição em usadas
+            if (auxLinhaInicx == auxLinhaFinx)
+            {
+                int intauxColLinx = Convert.ToInt32(auxColInicx) - 1;
+                int intauxColFinx = Convert.ToInt32(auxColFinx);
+
+                while (intauxColLinx < intauxColFinx)
+                {
+                    intauxColLinx++;
+                    string joinpInicx = string.Concat(auxLinhaInicx, intauxColLinx);
+
+                    marca2.Add(joinpInicx);
+
+
+                }
+            }
+
+        }
+    }
+    patternI = false;
+    inputEbool = false;
+
+}
+//Criação Matriz de Embarção de cada jogador
+//inicialização da matriz de embarcações
+for (int i = 0; i < 10; i++)
+{
+    for (int j = 0; j < 10; j++)
+    {
+        mapaEmbarc1[i, j] = ".";
+
+    }
+}
+for (int i = 0; i < 10; i++)
+{
+    for (int j = 0; j < 10; j++)
+    {
+        mapaEmbarc2[i, j] = ".";
+    }
+}
+//Marcação das Embarcações na matriz do jogador
+//Jogador1
+for (int i = 0; i < 10; i++)
+{
+    l1 = Convert.ToInt32(pInicialLin1[i]);
+    c1 = Convert.ToInt32(pInicialCol1[i]);
+    mapaEmbarc1[l1, c1] = "X";
+
+    l2 = Convert.ToInt32(pFinalLin1[i]);
+    c2 = Convert.ToInt32(pFinalCol1[i]);
+    mapaEmbarc1[l2, c2] = "X";
+
+    if (l1 == l2)
+    {
+        while (c2 > c1)
+        {
+            c1++;
+            mapaEmbarc1[l1, c1] = "X";
+        }
+    }
+    c1 = Convert.ToInt32(pInicialCol2[i]);
+    if (c1 == c2)
+    {
+        while (l2 > l1)
+        {
+            l1++;
+            mapaEmbarc1[l1, c2] = "X";
+        }
+    }
+}
+//Jogador2
+for (int i = 0; i < 10; i++)
+{
+    l1 = Convert.ToInt32(pInicialLin2[i]);
+    c1 = Convert.ToInt32(pInicialCol2[i]);
+    mapaEmbarc2[l1, c1] = "X";
+
+    l2 = Convert.ToInt32(pFinalLin2[i]);
+    c2 = Convert.ToInt32(pFinalCol2[i]);
+    mapaEmbarc2[l2, c2] = "X";
+
+    if (l1 == l2)
+    {
+        while (c2 > c1)
+        {
+            c1++;
+            mapaEmbarc2[l1, c1] = "X";
+        }
+    }
+    c1 = Convert.ToInt32(pInicialCol2[i]);
+    if (c1 == c2)
+    {
+        while (l2 > l1)
+        {
+            l1++;
+            mapaEmbarc2[l1, c2] = "X";
+        }
+    }
+}
+/*//Visualizar matriz de embarações
+for (int i = 0; i < 10; i++)
+{
+    Console.WriteLine(" ");
+    for (int j = 0; j < 10; j++)
+    {
+        Console.Write(mapaEmbarc1[i, j]);
+    }
+}
+for (int i = 0; i < 10; i++)
+{
+    Console.WriteLine(" ");
+    for (int j = 0; j < 10; j++)
+    {
+        Console.Write(mapaEmbarc2[i, j]);
+    }
+}*/
+Console.ReadKey();
+//Inicialização mapas de jogo limpo
+for (int i = 0; i < 10; i++)
+{
+    for (int j = 0; j < 10; j++)
+    {
+        mapa1[i, j] = ".";
+    }
+}
+for (int i = 0; i < 10; i++)
+{
+    for (int j = 0; j < 10; j++)
+    {
+        mapa2[i, j] = ".";
+    }
+}
+//Jogo
+//JOGADA JOGADOR 1
+while (count1 < 31 || count2 < 31)
+{
+
+    while (!jogadainvalida1)
+    {
+        Console.Clear();
+        Console.WriteLine("\t#####Inicio de Jogo########");
+        Console.WriteLine("");
+        Console.WriteLine("\tInsira linha de A-J e coluna de 0-9");
+        Console.WriteLine($"\tCampo do Adversário {nome2}\n\tTiros acertados: {count1}");
+        Console.WriteLine($"\tFaltam {30 - count1} tiros certos para vencer");
+
+
+        //Exibe campo adversario
+        for (int i = 0; i < 10; i++)
+        {
+            Console.WriteLine("\t");
+            for (int j = 0; j < 10; j++)
+            {
+                Console.Write($"  { mapa2[i, j]}");
+            }
+        }
+        //Ataque
+        Console.WriteLine("\n");
+        Console.WriteLine($"\tDigite SAIR para encerrar o jogo");
+        Console.Write($"\n\tQual seu Ataque Jogador {nome1}: ");
+        string ataque = Console.ReadLine().ToUpper();
+
+        if (ataque == "SAIR")
+        {
+            sair = true;
+            break;
+        }
+        else if (tiros1.Contains(ataque))
+        {
+            Console.WriteLine("\n\tPosição Invalida. Tente novamente");
+            Console.ReadKey();
+            continue;
+        }
+        else
+        {
+            tiros1.Add(ataque);
+            string ataqueCol = (ataque.Substring(1, 1));
+            string ataqueLin = "";
+            string auxLinha = ataque.Substring(0, 1);
+
+            foreach (var item in dicReplace)
+            {
+                if (item.Key == auxLinha)
+                {
+                    ataqueLin = (item.Value);
+                }
+            }
+
+            int ataqueColI = Convert.ToInt32(ataqueCol);
+            int ataqueLinI = Convert.ToInt32(ataqueLin);
+
+            for (int i = 0; i < 10; i++)
+            {
+                if (i == ataqueLinI)
+                {
+                    for (int j = 0; i < 10; j++)
+                    {
+
+                        if (j == ataqueColI)
+                        {
+                            if (mapaEmbarc2[ataqueLinI, ataqueColI] == "X")
+                            {
+                                count1++;
+                                mapa2[ataqueLinI, ataqueColI] = "X";
+                                Console.WriteLine("\tParabens voce acertou uma embarcação!");
+                                jogadainvalida1 = true;
+                                Console.ReadKey();
+                                break;
+                            }
+                            else
+                            {
+                                mapa2[ataqueLinI, ataqueColI] = "A";
+                                Console.WriteLine("\tVocê errou!");
+                                jogadainvalida1 = true;
+                                Console.ReadKey();
+                                break;
+                            }
+                        }
+                        else
+                            continue;
+
+                    }
+
+                }
+                else continue;
+
+
+            }
+
+        }
+
+    }
+    if (count1 == 30)
+    {
+        Console.WriteLine($"\n\tParabens {nome1}. Voce ganhou!");
+        Console.WriteLine($"\n\t###Fim de Jogo###");
+        sair = true;
+        break;
+    }
+    if (sair == true)
+    {
+        Console.WriteLine($"\n\t###Fim de Jogo###");
+        break;
+    }
+
+
+    //JOGADA JOGADOR 2
+    while (!jogadainvalida2)
+    {
+
+        Console.Clear();
+        Console.WriteLine("\t#####Inicio de Jogo########");
+        Console.WriteLine("");
+        Console.WriteLine("\tInsira linha de A-J e coluna de 0-9");
+        Console.WriteLine($"\tCampo do Adversário {nome1}\n\tTiros acertados: {count2}");
+        Console.WriteLine($"\tFaltam {30 - count2} tiros certos para vencer");
+
+
+        //Exibe campo adversario
+        for (int i = 0; i < 10; i++)
+        {
+            Console.WriteLine("\t");
+            for (int j = 0; j < 10; j++)
+            {
+                Console.Write($"  { mapa1[i, j]}");
+            }
+        }
+        //Ataque
+
+        Console.WriteLine("\n");
+        Console.WriteLine($"\tDigite SAIR para encerrar o jogo");
+        Console.Write($"\tQual seu Ataque Jogador {nome2}: ");
+        string ataque2 = Console.ReadLine().ToUpper();
+        if (ataque2 == "SAIR")
+        {
+            sair = true;
+            break;
+        }
+        else if (tiros2.Contains(ataque2))
+        {
+
+            Console.WriteLine("\n\tPosição Invalida. Tente novamente");
+            Console.ReadKey();
+            continue;
+        }
+        else
+        {
+            tiros2.Add(ataque2);
+            string ataqueCol = (ataque2.Substring(1, 1));
+            string ataqueLin = "";
+            string auxLinha = ataque2.Substring(0, 1);
+
+            foreach (var item in dicReplace)
+            {
+                if (item.Key == auxLinha)
+                {
+                    ataqueLin = (item.Value);
+                }
+            }
+            int ataqueColI = Convert.ToInt32(ataqueCol);
+            int ataqueLinI = Convert.ToInt32(ataqueLin);
+
+            for (int i = 0; i < 10; i++)
+            {
+                if (i == ataqueLinI)
+                {
+                    for (int j = 0; i < 10; j++)
+                    {
+
+                        if (j == ataqueColI)
+                        {
+                            if (mapaEmbarc1[ataqueLinI, ataqueColI] == "X")
+                            {
+                                count2++;
+                                mapa1[ataqueLinI, ataqueColI] = "X";
+                                Console.WriteLine("\tParabens voce acertou uma embarcação!");
+                                Console.ReadKey();
+                                jogadainvalida2 = true;
+                                break;
+                            }
+                            else
+                            {
+                                mapa1[ataqueLinI, ataqueColI] = "A";
+                                Console.WriteLine("\tVocê errou!");
+                                Console.ReadKey();
+                                jogadainvalida2 = true;
+                                break;
+                            }
+                        }
+                        else continue;
+
+                    }
+
+                }
+                else continue;
+            }
+
+
+
+
+        }
+    }
+
+    jogadainvalida2 = false;
+    jogadainvalida1 = false;
+
+
+    if (count2 == 30)
+    {
+        Console.WriteLine($"\n\tParabens {nome2}. Voce ganhou!");
+        Console.WriteLine($"\n\t###Fim de Jogo###");
+        sair = true;
+        break;
+    }
+    if (sair == true)
+    {
+        Console.WriteLine($"\n\t###Fim de Jogo###");
+        break;
+    }
+
+
+}
